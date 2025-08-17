@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthConnect - Your Health Education Platform</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            },
+            secondary: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .hero-bg {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://source.unsplash.com/random/1920x1080/?health') center/cover;
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .smooth-scroll {
+      scroll-behavior: smooth;
+    }
+    
+    /* Modal styles */
+    .modal-overlay {
+      backdrop-filter: blur(4px);
+    }
+    
+    .modal-content {
+      animation: modalSlideIn 0.3s ease-out;
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    /* Custom scrollbar for modal */
+    .modal-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .modal-scroll::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    
+    .modal-scroll::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+    }
+    
+    .modal-scroll::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  </style>
+</head>
+<body class="smooth-scroll">
+  <!-- Navigation -->
+  <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <!-- Logo and Menu -->
+        <div class="flex items-center space-x-8">
+          <div class="text-2xl font-bold">HealthConnect</div>
+          <div class="hidden md:flex space-x-6">
+            <a href="#home" class="hover:text-blue-200 transition-colors">Home</a>
+            <a href="#conditions" class="hover:text-blue-200 transition-colors">Health Conditions</a>
+            <a href="#first-aid" class="hover:text-blue-200 transition-colors">First Aid</a>
+            <a href="#clinics" class="hover:text-blue-200 transition-colors">Find Clinics</a>
+          </div>
+        </div>
+        
+        <!-- Right side -->
+        <div class="flex items-center space-x-4">
+          <select class="bg-white/20 text-white border border-white/30 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-white/50">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+          </select>
+          <a href="#contact" class="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">Contact Us</a>
+          
+          <!-- Mobile menu button -->
+          <button class="md:hidden text-white" id="mobile-menu-btn">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile menu -->
+      <div class="md:hidden hidden" id="mobile-menu">
+        <div class="py-4 space-y-3 border-t border-white/20">
+          <a href="#home" class="block hover:text-blue-200 transition-colors">Home</a>
+          <a href="#conditions" class="block hover:text-blue-200 transition-colors">Health Conditions</a>
+          <a href="#first-aid" class="block hover:text-blue-200 transition-colors">First Aid</a>
+          <a href="#clinics" class="block hover:text-blue-200 transition-colors">Find Clinics</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero-bg min-h-screen flex items-center justify-center text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+        Your Health, Our Priority
+      </h1>
+      <p class="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
+        Access trusted health information and connect with local healthcare providers
+      </p>
+      <a href="#conditions" class="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105 inline-block">
+        Learn More
+      </a>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <!-- Health Conditions Section -->
+    <section id="conditions" class="mb-20">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">Common Health Conditions</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Learn about common health conditions and how to manage them effectively</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover border border-gray-100 condition-card">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-heartbeat text-2xl text-blue-600"></i>
+            </div>
+            <h4 class="text-2xl font-bold text-gray-800 mb-4">Diabetes</h4>
+            <p class="text-gray-600 mb-6">Learn about symptoms, management, and prevention of diabetes.</p>
+            <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block w-full button">Read More</a>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover border border-gray-100 condition-card">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-tachometer-alt text-2xl text-red-600"></i>
+            </div>
+            <h4 class="text-2xl font-bold text-gray-800 mb-4">Hypertension</h4>
+            <p class="text-gray-600 mb-6">Understanding high blood pressure and its management.</p>
+            <a href="#" class="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors inline-block w-full button">Read More</a>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover border border-gray-100 condition-card">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-lungs text-2xl text-green-600"></i>
+            </div>
+            <h4 class="text-2xl font-bold text-gray-800 mb-4">Asthma</h4>
+            <p class="text-gray-600 mb-6">Information about asthma triggers and treatment options.</p>
+            <a href="#" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors inline-block w-full button">Read More</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- First Aid Guides Section -->
+    <section id="first-aid" class="mb-20">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">First Aid Guides</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Essential first aid information for common emergencies</p>
+      </div>
+      
+      <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl p-8 md:p-12">
+        <h3 class="text-3xl font-bold text-gray-800 mb-8 text-center">Basic First Aid Steps</h3>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="bg-white rounded-2xl p-8 shadow-lg">
+            <div class="flex items-center mb-6">
+              <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-fire text-xl text-red-600"></i>
+              </div>
+              <h4 class="text-2xl font-bold text-gray-800">For Burns</h4>
+            </div>
+            <ol class="space-y-3 text-gray-700">
+              <li class="flex items-start">
+                <span class="bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">1</span>
+                Cool the burn under cold running water
+              </li>
+              <li class="flex items-start">
+                <span class="bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">2</span>
+                Remove any jewelry near the burn
+              </li>
+              <li class="flex items-start">
+                <span class="bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">3</span>
+                Cover with sterile dressing
+              </li>
+              <li class="flex items-start">
+                <span class="bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">4</span>
+                Seek medical attention if severe
+              </li>
+            </ol>
+          </div>
+          
+          <div class="bg-white rounded-2xl p-8 shadow-lg">
+            <div class="flex items-center mb-6">
+              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-cut text-xl text-blue-600"></i>
+              </div>
+              <h4 class="text-2xl font-bold text-gray-800">For Cuts</h4>
+            </div>
+            <ol class="space-y-3 text-gray-700">
+              <li class="flex items-start">
+                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">1</span>
+                Clean the wound with soap and water
+              </li>
+              <li class="flex items-start">
+                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">2</span>
+                Apply direct pressure to stop bleeding
+              </li>
+              <li class="flex items-start">
+                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">3</span>
+                Apply antibiotic ointment
+              </li>
+              <li class="flex items-start">
+                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">4</span>
+                Cover with sterile bandage
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Find Clinics Section -->
+    <section id="clinics" class="mb-20">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">Find Local Clinics</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Connect with healthcare providers in your area</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover border border-gray-100 clinic-card">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+              <i class="fas fa-hospital text-xl text-green-600"></i>
+            </div>
+            <h4 class="text-2xl font-bold text-gray-800">City Health Center</h4>
+          </div>
+          <div class="space-y-3 mb-6">
+            <p class="flex items-center text-gray-600">
+              <i class="fas fa-map-marker-alt text-green-600 mr-3"></i>
+              123 Health Street, City
+            </p>
+            <p class="flex items-center text-gray-600">
+              <i class="fas fa-phone text-green-600 mr-3"></i>
+              (555) 123-4567
+            </p>
+            <p class="flex items-center text-gray-600">
+              <i class="fas fa-clock text-green-600 mr-3"></i>
+              Mon-Fri: 8am-6pm
+            </p>
+          </div>
+          <a href="#" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors inline-block w-full text-center button">Get Directions</a>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover border border-gray-100 clinic-card">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+              <i class="fas fa-ambulance text-xl text-blue-600"></i>
+            </div>
+            <h4 class="text-2xl font-bold text-gray-800">Community Medical Center</h4>
+          </div>
+          <div class="space-y-3 mb-6">
+            <p class="flex items-center text-gray-600">
+              <i class="fas fa-map-marker-alt text-blue-600 mr-3"></i>
+              456 Medical Ave, City
+            </p>
+            <p class="flex items-center text-gray-600">
+              <i class="fas fa-phone text-blue-600 mr-3"></i>
+              (555) 987-6543
+            </p>
+            <p class="flex items-center text-gray-600">
+              <i class="fas fa-clock text-blue-600 mr-3"></i>
+              24/7 Emergency Care
+            </p>
+          </div>
+          <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block w-full text-center button">Get Directions</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SMS Notifications Section -->
+    <section id="notifications" class="mb-20">
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl p-8 md:p-12 text-white">
+        <div class="text-center mb-8">
+          <h3 class="text-3xl font-bold mb-4">Stay Updated with SMS Notifications</h3>
+          <p class="text-xl opacity-90">Get important health updates and reminders delivered to your phone</p>
+        </div>
+        
+        <form class="max-w-4xl mx-auto">
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label class="block text-sm font-semibold mb-2">Phone Number</label>
+              <input type="tel" placeholder="Enter your phone number" 
+                     class="w-full px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white/50">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Select Notifications</label>
+              <select multiple class="w-full px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white/50">
+                <option value="appointments">Appointment Reminders</option>
+                <option value="health-tips">Health Tips</option>
+                <option value="emergency">Emergency Alerts</option>
+                <option value="updates">Clinic Updates</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors w-full md:w-auto">
+            Subscribe to Notifications
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="mb-20">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">Contact Us</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Get in touch with us for any questions or support</p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+        <form class="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+              <input type="text" placeholder="Your name" 
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+              <input type="email" placeholder="Your email" 
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Message</label>
+            <textarea placeholder="Your message" rows="6"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+          </div>
+          <button type="submit" class="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors w-full">
+            Send Message
+          </button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <h4 class="text-2xl font-bold mb-4">HealthConnect</h4>
+          <p class="text-gray-400 leading-relaxed">Your trusted source for health information and local healthcare connections.</p>
+        </div>
+        <div>
+          <h4 class="text-xl font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="#conditions" class="text-gray-400 hover:text-white transition-colors">Health Conditions</a></li>
+            <li><a href="#first-aid" class="text-gray-400 hover:text-white transition-colors">First Aid Guides</a></li>
+            <li><a href="#clinics" class="text-gray-400 hover:text-white transition-colors">Find Clinics</a></li>
+            <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-xl font-semibold mb-4">Connect With Us</h4>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center hover:bg-pink-700 transition-colors">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center hover:bg-blue-800 transition-colors">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center">
+        <p class="text-gray-400">© 2024 HealthConnect. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // API Base URL
+    const API_BASE_URL = '/api';
+
+    // Utility function for API calls
+    async function apiCall(endpoint, options = {}) {
+      try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+          },
+          ...options
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'API call failed');
+        }
+        
+        return data;
+      } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+      }
+    }
+
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Language selector
+    document.querySelector('select').addEventListener('change', function() {
+      const language = this.value;
+      console.log('Language changed to:', language);
+    });
+
+    // Health Conditions - Read More buttons
+    document.querySelectorAll('.condition-card .button').forEach(button => {
+      button.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        // Get the condition name from the card
+        const card = this.closest('.condition-card');
+        const conditionName = card.querySelector('h4').textContent;
+        
+        try {
+          // Fetch health conditions from API
+          const response = await apiCall('/health-conditions');
+          const conditions = response.data.conditions;
+          
+          // Find the matching condition
+          const condition = conditions.find(c => c.name.toLowerCase() === conditionName.toLowerCase());
+          
+          if (condition) {
+            // Show condition details in a modal or redirect
+            showConditionDetails(condition);
+          } else {
+            alert('Condition details not found. Please try again later.');
+          }
+        } catch (error) {
+          alert('Failed to load condition details. Please try again.');
+        }
+      });
+    });
+
+    // Function to show condition details
+    function showConditionDetails(condition) {
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-overlay';
+      modal.innerHTML = `
+        <div class="bg-white rounded-lg p-8 max-w-2xl mx-4 max-h-[90vh] overflow-y-auto modal-content modal-scroll">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-gray-800">${condition.name}</h2>
+            <button class="close-modal text-gray-500 hover:text-gray-700 transition-colors">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+          <div class="space-y-4">
+            <p class="text-gray-600">${condition.description}</p>
+            
+            <div>
+              <h3 class="font-semibold text-gray-800 mb-2">Symptoms:</h3>
+              <ul class="list-disc list-inside text-gray-600">
+                ${condition.symptoms.map(symptom => `<li>${symptom}</li>`).join('')}
+              </ul>
+            </div>
+            
+            ${condition.causes ? `
+            <div>
+              <h3 class="font-semibold text-gray-800 mb-2">Causes:</h3>
+              <ul class="list-disc list-inside text-gray-600">
+                ${condition.causes.map(cause => `<li>${cause}</li>`).join('')}
+              </ul>
+            </div>
+            ` : ''}
+            
+            ${condition.prevention ? `
+            <div>
+              <h3 class="font-semibold text-gray-800 mb-2">Prevention:</h3>
+              <ul class="list-disc list-inside text-gray-600">
+                ${condition.prevention.map(item => `<li>${item}</li>`).join('')}
+              </ul>
+            </div>
+            ` : ''}
+            
+            ${condition.emergencySigns ? `
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <h3 class="font-semibold text-red-800 mb-2">Emergency Signs:</h3>
+              <ul class="list-disc list-inside text-red-700">
+                ${condition.emergencySigns.map(sign => `<li>${sign}</li>`).join('')}
+              </ul>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      
+      // Add event listeners for closing modal
+      const closeModal = () => modal.remove();
+      
+      modal.querySelector('.close-modal').addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+      
+      // Close on Escape key
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+          closeModal();
+          document.removeEventListener('keydown', handleEscape);
+        }
+      };
+      document.addEventListener('keydown', handleEscape);
+      
+      document.body.appendChild(modal);
+    }
+
+    // Clinics - Get Directions buttons
+    document.querySelectorAll('.clinic-card .button').forEach(button => {
+      button.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        // Get clinic info from the card
+        const card = this.closest('.clinic-card');
+        const clinicName = card.querySelector('h4').textContent;
+        
+        try {
+          // Fetch clinics from API
+          const response = await apiCall('/clinics');
+          const clinics = response.data.clinics;
+          
+          // Find the matching clinic
+          const clinic = clinics.find(c => c.name.toLowerCase() === clinicName.toLowerCase());
+          
+          if (clinic && clinic.address) {
+            // Open Google Maps with clinic location
+            const address = `${clinic.address.street}, ${clinic.address.city}, ${clinic.address.state} ${clinic.address.zipCode}`;
+            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+            window.open(mapsUrl, '_blank');
+          } else {
+            alert('Clinic location not available. Please contact the clinic directly.');
+          }
+        } catch (error) {
+          alert('Failed to get clinic directions. Please try again.');
+        }
+      });
+    });
+
+    // SMS notifications form
+    document.querySelector('#notifications form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const phoneInput = this.querySelector('input[type="tel"]');
+      const notificationsSelect = this.querySelector('select');
+      
+      const phone = phoneInput.value;
+      const notifications = Array.from(notificationsSelect.selectedOptions).map(option => option.value);
+      
+      if (!phone) {
+        alert('Please enter your phone number');
+        return;
+      }
+      
+      try {
+        const response = await apiCall('/notifications/subscribe', {
+          method: 'POST',
+          body: JSON.stringify({
+            phone: phone,
+            notifications: notifications
+          })
+        });
+        
+        alert(response.message || 'Successfully subscribed to SMS notifications!');
+        this.reset();
+      } catch (error) {
+        alert('Failed to subscribe. Please try again.');
+      }
+    });
+
+    // Contact form
+    document.querySelector('#contact form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const nameInput = this.querySelector('input[type="text"]');
+      const emailInput = this.querySelector('input[type="email"]');
+      const messageInput = this.querySelector('textarea');
+      
+      const name = nameInput.value;
+      const email = emailInput.value;
+      const message = messageInput.value;
+      
+      if (!name || !email || !message) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      try {
+        const response = await apiCall('/contact', {
+          method: 'POST',
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            message: message
+          })
+        });
+        
+        alert(response.message || 'Thank you for your message. We will get back to you soon!');
+        this.reset();
+      } catch (error) {
+        alert('Failed to send message. Please try again.');
+      }
+    });
+
+    // Load health conditions data on page load
+    async function loadHealthConditions() {
+      try {
+        const response = await apiCall('/health-conditions');
+        console.log('Health conditions loaded:', response.data.conditions.length);
+      } catch (error) {
+        console.error('Failed to load health conditions:', error);
+      }
+    }
+
+    // Load clinics data on page load
+    async function loadClinics() {
+      try {
+        const response = await apiCall('/clinics');
+        console.log('Clinics loaded:', response.data.clinics.length);
+      } catch (error) {
+        console.error('Failed to load clinics:', error);
+      }
+    }
+
+    // Load first aid guides on page load
+    async function loadFirstAidGuides() {
+      try {
+        const response = await apiCall('/first-aid');
+        console.log('First aid guides loaded:', response.data.guides.length);
+      } catch (error) {
+        console.error('Failed to load first aid guides:', error);
+      }
+    }
+
+    // Initialize data loading when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      loadHealthConditions();
+      loadClinics();
+      loadFirstAidGuides();
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const href = this.getAttribute('href');
+        if (href && href !== '#') {
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
