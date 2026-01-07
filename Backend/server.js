@@ -16,6 +16,9 @@ const clinicRoutes = require('./routes/clinics');
 const notificationRoutes = require('./routes/notifications');
 const contactRoutes = require('./routes/contact');
 const firstAidRoutes = require('./routes/firstAid');
+const appointmentRoutes = require('./routes/appointments');
+const messageRoutes = require('./routes/messages');
+const resourceRoutes = require('./routes/resources');
 
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -26,8 +29,8 @@ const app = express();
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://yourdomain.com'] 
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://yourdomain.com']
     : ['http://localhost:3000', 'http://127.0.0.1:5500'],
   credentials: true
 }));
@@ -70,6 +73,9 @@ app.use('/api/clinics', clinicRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/first-aid', firstAidRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/resources', resourceRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -101,8 +107,8 @@ app.use('*', (req, res) => {
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(
-      process.env.NODE_ENV === 'production' 
-        ? process.env.MONGODB_URI_PROD 
+      process.env.NODE_ENV === 'production'
+        ? process.env.MONGODB_URI_PROD
         : process.env.MONGODB_URI,
       {
         useNewUrlParser: true,

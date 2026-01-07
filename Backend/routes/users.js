@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     res.status(200).json({
       status: 'success',
       data: {
@@ -123,7 +123,7 @@ router.put('/:id/role', authenticateToken, authorize('admin'), async (req, res) 
   try {
     const { role } = req.body;
 
-    if (!['user', 'admin', 'healthcare_provider'].includes(role)) {
+    if (!['patient', 'doctor', 'admin'].includes(role)) {
       return res.status(400).json({
         status: 'error',
         message: 'Invalid role'
@@ -152,6 +152,34 @@ router.put('/:id/role', authenticateToken, authorize('admin'), async (req, res) 
     res.status(500).json({
       status: 'error',
       message: 'Server error while updating user role'
+    });
+  }
+});
+
+// Approve doctor (Admin only)
+router.put('/:id/approve', authenticateToken, authorize('admin'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user || user.role !== 'doctor') {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Doctor not found'
+      });
+    }
+
+    user.status = 'active'; // or 'approved' depending on your model enum
+    await user.save();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Doctor approved successfully',
+      data: { user }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Server error while approving doctor'
     });
   }
 });

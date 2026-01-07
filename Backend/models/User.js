@@ -32,8 +32,27 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'healthcare_provider'],
-    default: 'user'
+    enum: ['patient', 'doctor', 'admin'],
+    default: 'patient'
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'suspended', 'active'],
+    default: function() {
+      return this.role === 'doctor' ? 'pending' : 'active';
+    }
+  },
+  doctorDetails: {
+    specialization: String,
+    licenseNumber: String,
+    experience: Number,
+    bio: String,
+    consultationFee: Number,
+    hospital: String,
+    availability: [{
+      day: String,
+      slots: [String]
+    }]
   },
   avatar: {
     type: String,

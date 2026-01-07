@@ -38,7 +38,15 @@ router.post('/register', [
       });
     }
 
-    const { name, email, password, phone } = req.body;
+    const { name, email, password, phone, role, doctorDetails } = req.body;
+
+    // Validate role
+    if (role && !['patient', 'doctor'].includes(role)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid role selection'
+      });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -59,13 +67,15 @@ router.post('/register', [
       email,
       password,
       phone,
+      role: role || 'patient',
+      doctorDetails: role === 'doctor' ? doctorDetails : undefined,
       verificationToken,
       verificationExpire
     });
 
     // Send verification email
     const verificationUrl = `${req.protocol}://${req.get('host')}/api/auth/verify/${verificationToken}`;
-    
+
     try {
       await sendEmail({
         email: user.email,
@@ -252,7 +262,7 @@ router.post('/forgot-password', [
 
     // Send reset email
     const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
-    
+
     try {
       await sendEmail({
         email: user.email,
@@ -347,7 +357,7 @@ router.put('/reset-password/:token', [
 router.get('/me', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     res.status(200).json({
       status: 'success',
       data: {
