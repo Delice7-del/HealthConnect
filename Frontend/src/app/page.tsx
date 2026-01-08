@@ -4,6 +4,8 @@ import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/Hero";
 import Footer from "@/components/layout/Footer";
 
+import { Video, Calendar, Clock, FileText } from 'lucide-react';
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#f8fafc] gpu-boost">
@@ -19,15 +21,15 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Service Cards placeholder */}
+            {/* Service Cards */}
             {[
-              { title: "Virtual Consultation", icon: "💬", desc: "Consult with experts from the comfort of your home." },
-              { title: "Appointment Booking", icon: "📅", desc: "Easy and quick scheduling with top doctors." },
-              { title: "24/7 Support", icon: "🆘", desc: "Round the clock medical assistance for emergencies." },
-              { title: "Health Records", icon: "📁", desc: "Securely manage all your medical history in one place." }
+              { title: "Virtual Consultation", icon: <Video size={32} />, desc: "Consult with experts from the comfort of your home." },
+              { title: "Appointment Booking", icon: <Calendar size={32} />, desc: "Easy and quick scheduling with top doctors." },
+              { title: "24/7 Support", icon: <Clock size={32} />, desc: "Round the clock medical assistance for emergencies." },
+              { title: "Health Records", icon: <FileText size={32} />, desc: "Securely manage all your medical history in one place." }
             ].map((service, i) => (
               <div key={i} className="p-6 border border-gray-100 rounded-3xl hover:border-primary/50 transition-all hover:bg-primary/5 group cursor-pointer">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform inline-block">
+                <div className="mb-4 text-primary group-hover:scale-110 transition-transform inline-block p-4 bg-primary/10 rounded-2xl group-hover:bg-primary group-hover:text-white">
                   {service.icon}
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">{service.title}</h3>

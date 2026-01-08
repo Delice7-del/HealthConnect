@@ -5,6 +5,10 @@ export const userService = {
         return apiCall('/users');
     },
 
+    async getDoctors() {
+        return apiCall('/users/doctors');
+    },
+
     async getProfile() {
         return apiCall('/users/profile');
     },

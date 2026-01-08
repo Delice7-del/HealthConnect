@@ -4,6 +4,23 @@ const { authenticateToken, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Get all doctors (Accessible by patients for booking)
+router.get('/doctors', authenticateToken, async (req, res) => {
+  try {
+    const doctors = await User.find({ role: 'doctor', status: 'active' })
+      .select('name email doctorDetails avatar');
+    res.status(200).json({
+      status: 'success',
+      data: { doctors }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Server error while fetching doctors'
+    });
+  }
+});
+
 // Get user profile
 router.get('/profile', authenticateToken, async (req, res) => {
   try {

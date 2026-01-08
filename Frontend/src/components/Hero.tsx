@@ -61,7 +61,7 @@ export default function Hero() {
                     </div>
 
                     <div className="p-8 bg-white glass rounded-3xl premium-shadow space-y-4 transition-transform hover:-translate-y-2">
-                        <div className="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center mx-auto text-secondary">
+                        <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
                             <Clock size={28} />
                         </div>
                         <h3 className="text-xl font-bold text-gray-800">24/7 Availability</h3>
@@ -69,7 +69,7 @@ export default function Hero() {
                     </div>
 
                     <div className="p-8 bg-white glass rounded-3xl premium-shadow space-y-4">
-                        <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto text-accent">
+                        <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
                             <Users size={28} />
                         </div>
                         <h3 className="text-xl font-bold text-gray-800">Patient Centric</h3>

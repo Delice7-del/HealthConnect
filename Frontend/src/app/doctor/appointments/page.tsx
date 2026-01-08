@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/layout/Sidebar';
 import { apiCall } from '@/lib/api';
 import { Appointment } from '@/types';
@@ -9,16 +11,24 @@ import Button from '@/components/Button';
 import { cn } from '@/lib/utils';
 
 export default function DoctorAppointments() {
+    const router = useRouter();
+    const { user, loading: authLoading } = useAuth();
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchAppointments();
-    }, []);
+        if (!authLoading && !user) {
+            router.push('/login');
+            return;
+        }
+        if (user) {
+            fetchAppointments();
+        }
+    }, [user, authLoading]);
 
     const fetchAppointments = async () => {
         try {
-            const data = await apiCall('/appointments');
+            const data = await apiCall('/appointments/my');
             setAppointments(data.data.appointments);
         } catch (err) {
             console.error('Failed to fetch appointments', err);

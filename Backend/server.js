@@ -26,13 +26,21 @@ const { authenticateToken } = require('./middleware/auth');
 
 const app = express();
 
+// DEBUG: Request Logger
+app.use((req, res, next) => {
+  console.log(`[DEBUG] ${req.method} ${req.url}`);
+  next();
+});
+
 // Security middleware
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
     ? ['https://yourdomain.com']
-    : ['http://localhost:3000', 'http://127.0.0.1:5500'],
-  credentials: true
+    : true, // Allow all origins in development for easier debugging
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Rate limiting
@@ -87,7 +95,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Serve frontend for all other routes
+// 404 handler for API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({
+    status: 'error',
+    message: `API Route ${req.originalUrl} not found`
+  });
+});
+
+// Serve the frontend for all other routes (Single Page App support)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -117,7 +133,12 @@ const connectDB = async () => {
     );
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error('Database connection error:', error.message);
+    console.error('CRITICAL: Database connection error occurred!');
+    console.error('Error Name:', error.name);
+    console.error('Error Message:', error.message);
+    if (error.name === 'MongooseServerSelectionError') {
+      console.error('HINT: Make sure your MongoDB service is running (mongod).');
+    }
     process.exit(1);
   }
 };
@@ -126,8 +147,9 @@ const connectDB = async () => {
 const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   await connectDB();
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    console.log(`Bound to all interfaces (0.0.0.0)`);
     console.log(`API Documentation: http://localhost:${PORT}/api/docs`);
   });
 };

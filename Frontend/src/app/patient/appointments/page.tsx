@@ -1,25 +1,37 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/layout/Sidebar';
 import { apiCall } from '@/lib/api';
 import { Appointment } from '@/types';
 import { Calendar, Clock, MapPin, Search, Filter, MoreVertical, X, Check } from 'lucide-react';
 import Button from '@/components/Button';
 import { cn } from '@/lib/utils';
+import BookAppointmentModal from '@/components/BookAppointmentModal';
 
 export default function PatientAppointments() {
+    const router = useRouter();
+    const { user, loading: authLoading } = useAuth();
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'completed' | 'canceled'>('all');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        fetchAppointments();
-    }, []);
+        if (!authLoading && !user) {
+            router.push('/login');
+            return;
+        }
+        if (user) {
+            fetchAppointments();
+        }
+    }, [user, authLoading]);
 
     const fetchAppointments = async () => {
         try {
-            const data = await apiCall('/appointments');
+            const data = await apiCall('/appointments/my');
             setAppointments(data.data.appointments);
         } catch (err) {
             console.error('Failed to fetch appointments', err);
@@ -51,7 +63,7 @@ export default function PatientAppointments() {
                         <h1 className="text-3xl font-bold text-gray-900">My Appointments</h1>
                         <p className="text-gray-500 mt-1">Manage your consultations and visit history.</p>
                     </div>
-                    <Button>
+                    <Button onClick={() => setIsModalOpen(true)}>
                         Book New Appointment
                     </Button>
                 </header>
@@ -126,13 +138,19 @@ export default function PatientAppointments() {
                             <Calendar className="mx-auto text-gray-300 mb-4" size={48} />
                             <h3 className="text-xl font-bold text-gray-800">No appointments found</h3>
                             <p className="text-gray-500 mt-2">Try changing your filters or book a new consultation.</p>
-                            <Button variant="outline" className="mt-6">
+                            <Button variant="outline" className="mt-6" onClick={() => setIsModalOpen(true)}>
                                 Book My First Appointment
                             </Button>
                         </div>
                     )}
                 </div>
             </main>
+
+            <BookAppointmentModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSuccess={fetchAppointments}
+            />
         </div>
     );
 }

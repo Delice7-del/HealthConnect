@@ -9,7 +9,7 @@ const services = [
         title: 'Consult Experts',
         desc: 'Connect with specialized doctors across various fields for personalized consultations.',
         icon: <Stethoscope size={28} />,
-        color: 'bg-blue-100 text-blue-600'
+        color: 'bg-purple-100 text-purple-600'
     },
     {
         title: 'Virtual Chat',
@@ -21,13 +21,13 @@ const services = [
         title: 'Health Resources',
         desc: 'Access a vast library of verified medical articles, guides, and wellness tips.',
         icon: <BookOpen size={28} />,
-        color: 'bg-green-100 text-green-600'
+        color: 'bg-purple-100 text-purple-600'
     },
     {
         title: 'Find Clinics',
         desc: 'Locate top-rated clinics and hospitals near you with integrated maps.',
         icon: <MapPin size={28} />,
-        color: 'bg-red-100 text-red-600'
+        color: 'bg-purple-100 text-purple-600'
     }
 ];
 

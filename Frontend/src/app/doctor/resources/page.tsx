@@ -104,7 +104,7 @@ export default function DoctorResources() {
                                             </div>
                                         </td>
                                     </tr>
-                                ) : (
+                                )) : (
                                     <tr>
                                         <td colSpan={5} className="px-6 py-20 text-center text-gray-400 italic">No articles published yet.</td>
                                     </tr>

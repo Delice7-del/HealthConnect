@@ -41,7 +41,7 @@ export default function AboutPage() {
                         </div>
 
                         <div className="p-8 bg-white rounded-3xl premium-shadow space-y-4">
-                            <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-red-500">
+                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                                 <Heart size={24} />
                             </div>
                             <h3 className="text-xl font-bold text-gray-800">Our Compassion</h3>
@@ -49,7 +49,7 @@ export default function AboutPage() {
                         </div>
 
                         <div className="p-8 bg-white rounded-3xl premium-shadow space-y-4">
-                            <div className="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary">
+                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                                 <Shield size={24} />
                             </div>
                             <h3 className="text-xl font-bold text-gray-800">Our Trust</h3>

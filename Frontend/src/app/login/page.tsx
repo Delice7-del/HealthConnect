@@ -27,7 +27,12 @@ export default function LoginPage() {
             });
 
             login(data.token, data.data.user);
-            router.push('/');
+
+            // Redirect based on role
+            const role = data.data.user.role;
+            if (role === 'admin') router.push('/admin/dashboard');
+            else if (role === 'doctor') router.push('/doctor/dashboard');
+            else router.push('/patient/dashboard');
         } catch (err: any) {
             setError(err.message || 'Login failed. Please check your credentials.');
         } finally {
@@ -94,6 +99,31 @@ export default function LoginPage() {
                             Sign In <ArrowRight size={18} className="ml-2" />
                         </Button>
                     </form>
+
+                    {/* Quick Login for Testing */}
+                    <div className="mt-8 space-y-3">
+                        <p className="text-xs text-center text-gray-400 font-medium uppercase tracking-wider">Quick Login (Development Only)</p>
+                        <div className="grid grid-cols-3 gap-2">
+                            <button
+                                onClick={() => setFormData({ email: 'admin@healthconnect.com', password: 'Admin@123' })}
+                                className="text-[10px] py-2 bg-gray-50 hover:bg-red-50 hover:text-red-600 text-gray-500 rounded-xl border border-gray-100 transition-all font-bold"
+                            >
+                                Admin
+                            </button>
+                            <button
+                                onClick={() => setFormData({ email: 'doctor@test.com', password: 'Password@123' })}
+                                className="text-[10px] py-2 bg-gray-50 hover:bg-blue-50 hover:text-blue-600 text-gray-500 rounded-xl border border-gray-100 transition-all font-bold"
+                            >
+                                Doctor
+                            </button>
+                            <button
+                                onClick={() => setFormData({ email: 'patient@test.com', password: 'Password@123' })}
+                                className="text-[10px] py-2 bg-gray-50 hover:bg-green-50 hover:text-green-600 text-gray-500 rounded-xl border border-gray-100 transition-all font-bold"
+                            >
+                                Patient
+                            </button>
+                        </div>
+                    </div>
 
                     <div className="mt-8 pt-8 border-t border-gray-50 text-center text-sm text-gray-500">
                         Don't have an account? {' '}

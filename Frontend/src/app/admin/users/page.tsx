@@ -1,20 +1,30 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/layout/Sidebar';
 import { apiCall } from '@/lib/api';
-import { User, Shield, Check, X, Search, Filter, ShieldAlert } from 'lucide-react';
+import { User, Shield, Check, X, Search, Filter, ShieldAlert, MoreVertical } from 'lucide-react';
 import Button from '@/components/Button';
 import { cn } from '@/lib/utils';
 
 export default function ManageUsers() {
+    const router = useRouter();
+    const { user, loading: authLoading } = useAuth();
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
 
     useEffect(() => {
-        fetchUsers();
-    }, []);
+        if (!authLoading && !user) {
+            router.push('/login');
+            return;
+        }
+        if (user) {
+            fetchUsers();
+        }
+    }, [user, authLoading]);
 
     const fetchUsers = async () => {
         try {

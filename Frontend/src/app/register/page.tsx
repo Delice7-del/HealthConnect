@@ -45,7 +45,12 @@ export default function RegisterPage() {
             });
 
             login(data.token, data.data.user);
-            router.push('/'); // Or directly to dashboard if verified or mock verification
+
+            // Redirect based on role
+            const userRole = data.data.user.role;
+            if (userRole === 'admin') router.push('/admin/dashboard');
+            else if (userRole === 'doctor') router.push('/doctor/dashboard');
+            else router.push('/patient/dashboard');
         } catch (err: any) {
             setError(err.message || 'Registration failed. Please try again.');
         } finally {

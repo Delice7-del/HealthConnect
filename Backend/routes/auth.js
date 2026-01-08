@@ -27,6 +27,7 @@ router.post('/register', [
     .matches(/^\+?[\d\s-()]+$/)
     .withMessage('Please provide a valid phone number')
 ], async (req, res) => {
+  console.log('[DEBUG] Register body:', req.body);
   try {
     // Check for validation errors
     const errors = validationResult(req);
@@ -61,7 +62,7 @@ router.post('/register', [
     const verificationToken = crypto.randomBytes(20).toString('hex');
     const verificationExpire = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
-    // Create user
+    // Create user (Auto-verified for testing)
     const user = await User.create({
       name,
       email,
@@ -70,7 +71,8 @@ router.post('/register', [
       role: role || 'patient',
       doctorDetails: role === 'doctor' ? doctorDetails : undefined,
       verificationToken,
-      verificationExpire
+      verificationExpire,
+      isVerified: true // Auto-verify
     });
 
     // Send verification email
@@ -155,6 +157,7 @@ router.post('/login', [
       });
     }
 
+    /* 
     // Check if user is verified
     if (!user.isVerified) {
       return res.status(401).json({
@@ -162,6 +165,7 @@ router.post('/login', [
         message: 'Please verify your email before logging in'
       });
     }
+    */
 
     // Create token
     const token = user.getSignedJwtToken();

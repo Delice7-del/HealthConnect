@@ -33,6 +33,7 @@ export default function PatientBlog() {
             author: 'Dr. Emily White',
             date: 'Jan 2, 2024',
             readTime: '4 min read',
+            
             image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&q=80&w=400',
         }
     ];

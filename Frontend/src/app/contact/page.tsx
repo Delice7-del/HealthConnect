@@ -22,7 +22,7 @@ export default function ContactPage() {
 
                             <div className="space-y-8">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                                    <div className="w-12 h-12 bg-accent/10 rounded-2xl flex items-center justify-center text-accent">
                                         <Mail size={24} />
                                     </div>
                                     <div>
@@ -32,7 +32,7 @@ export default function ContactPage() {
                                 </div>
 
                                 <div className="flex items-center gap-6">
-                                    <div className="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary">
+                                    <div className="w-12 h-12 bg-accent/10 rounded-2xl flex items-center justify-center text-accent">
                                         <Phone size={24} />
                                     </div>
                                     <div>
