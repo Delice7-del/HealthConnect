@@ -1,15 +1,249 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/layout/Sidebar';
 import { useAuth } from '@/context/AuthContext';
-import { User, Mail, Phone, MapPin, Camera, Shield, Award, Clock, Briefcase } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Camera, Shield, Award, Clock, Briefcase, Lock } from 'lucide-react';
 import Button from '@/components/Button';
 import { cn } from '@/lib/utils';
+import { apiCall } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 export default function DoctorProfile() {
-    const { user } = useAuth();
-    const [isEditing, setIsEditing] = useState(false);
+    const { user, checkAuth } = useAuth();
+    const [activeTab, setActiveTab] = useState('Public Profile');
+    const [isSaving, setIsSaving] = useState(false);
+
+    // Profile State
+    const [formData, setFormData] = useState({
+        name: '',
+        phone: '',
+        bio: '',
+        specialization: '',
+        hospital: '',
+        experience: 0,
+        consultationFee: 0,
+    });
+
+    // Security State
+    const [securityData, setSecurityData] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    });
+
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                name: user.name || '',
+                phone: user.phone || '',
+                bio: user.doctorDetails?.bio || '',
+                specialization: user.doctorDetails?.specialization || '',
+                hospital: user.doctorDetails?.hospital || '',
+                experience: user.doctorDetails?.experience || 0,
+                consultationFee: user.doctorDetails?.consultationFee || 0,
+            });
+        }
+    }, [user]);
+
+    const handleProfileSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSaving(true);
+        try {
+            await apiCall('/users/profile', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: formData.name,
+                    phone: formData.phone,
+                    doctorDetails: {
+                        bio: formData.bio,
+                        specialization: formData.specialization,
+                        hospital: formData.hospital,
+                        experience: Number(formData.experience),
+                        consultationFee: Number(formData.consultationFee)
+                    }
+                })
+            });
+            await checkAuth(); // Refresh user context
+            toast.success('Profile updated successfully!');
+        } catch (err: any) {
+            toast.error(err.message || 'Failed to update profile');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleSecuritySubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (securityData.newPassword !== securityData.confirmPassword) {
+            return toast.error('New passwords do not match!');
+        }
+        setIsSaving(true);
+        try {
+            await apiCall('/users/settings/change-password', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    currentPassword: securityData.currentPassword,
+                    newPassword: securityData.newPassword
+                })
+            });
+            toast.success('Password changed successfully!');
+            setSecurityData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } catch (err: any) {
+            toast.error(err.message || 'Failed to change password');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const tabs = [
+        { label: 'Public Profile', icon: <User size={18} /> },
+        { label: 'Qualifications', icon: <Award size={18} /> },
+        { label: 'Office Details', icon: <Briefcase size={18} /> },
+        { label: 'Security', icon: <Shield size={18} /> },
+    ];
+
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case 'Public Profile':
+                return (
+                    <form onSubmit={handleProfileSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">Full Name</label>
+                                <input
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">Phone Number</label>
+                                <input
+                                    type="tel"
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
+                                />
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">Specialization</label>
+                                <input
+                                    type="text"
+                                    value={formData.specialization}
+                                    onChange={(e) => setFormData({...formData, specialization: e.target.value})}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
+                                    placeholder="e.g. Cardiologist"
+                                />
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">Professional Bio</label>
+                                <textarea
+                                    value={formData.bio}
+                                    onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                                    className="w-full px-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 min-h-[120px]"
+                                    placeholder="Tell patients about yourself..."
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-end pt-4 border-t border-gray-50 mt-6">
+                            <Button type="submit" isLoading={isSaving}>Save Public Profile</Button>
+                        </div>
+                    </form>
+                );
+            case 'Qualifications':
+                return (
+                    <form onSubmit={handleProfileSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">Years of Experience</label>
+                                <input
+                                    type="number"
+                                    value={formData.experience}
+                                    onChange={(e) => setFormData({...formData, experience: Number(e.target.value)})}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-end pt-4 border-t border-gray-50 mt-6">
+                            <Button type="submit" isLoading={isSaving}>Save Qualifications</Button>
+                        </div>
+                    </form>
+                );
+            case 'Office Details':
+                return (
+                    <form onSubmit={handleProfileSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">Practice Hospital</label>
+                                <input
+                                    type="text"
+                                    value={formData.hospital}
+                                    onChange={(e) => setFormData({...formData, hospital: e.target.value})}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
+                                    placeholder="e.g. St. Mary's Medical Center"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">Consultation Fee ($)</label>
+                                <input
+                                    type="number"
+                                    value={formData.consultationFee}
+                                    onChange={(e) => setFormData({...formData, consultationFee: Number(e.target.value)})}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-end pt-4 border-t border-gray-50 mt-6">
+                            <Button type="submit" isLoading={isSaving}>Save Office Details</Button>
+                        </div>
+                    </form>
+                );
+            case 'Security':
+                return (
+                    <form onSubmit={handleSecuritySubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 gap-6 max-w-lg">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">Current Password</label>
+                                <input
+                                    type="password"
+                                    required
+                                    value={securityData.currentPassword}
+                                    onChange={(e) => setSecurityData({...securityData, currentPassword: e.target.value})}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">New Password</label>
+                                <input
+                                    type="password"
+                                    required
+                                    value={securityData.newPassword}
+                                    onChange={(e) => setSecurityData({...securityData, newPassword: e.target.value})}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-500 mb-2">Confirm New Password</label>
+                                <input
+                                    type="password"
+                                    required
+                                    value={securityData.confirmPassword}
+                                    onChange={(e) => setSecurityData({...securityData, confirmPassword: e.target.value})}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-start pt-4 border-t border-gray-50 mt-6">
+                            <Button type="submit" isLoading={isSaving}>Change Password</Button>
+                        </div>
+                    </form>
+                );
+            default:
+                return null;
+        }
+    };
 
     return (
         <div className="flex bg-[#f8fafc] min-h-screen">
@@ -21,44 +255,32 @@ export default function DoctorProfile() {
                     <p className="text-gray-500 mt-1">Manage your professional profile and availability.</p>
                 </header>
 
-                <div className="max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Professional Overview Card */}
+                <div className="max-w-5xl grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    {/* Sidebar / Overview Card */}
                     <div className="lg:col-span-1 space-y-6">
-                        <div className="bg-white p-8 rounded-3xl premium-shadow border border-gray-100 text-center">
-                            <div className="relative inline-block mb-6">
-                                <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center text-primary text-2xl font-bold">
+                        <div className="bg-white p-6 rounded-3xl premium-shadow border border-gray-100 text-center">
+                            <div className="relative inline-block mb-4">
+                                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary text-xl font-bold mx-auto">
                                     {user?.name?.charAt(0) || 'D'}
                                 </div>
                                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-white" title="Verified Provider">
                                     <Shield size={12} />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900">Dr. {user?.name}</h3>
-                            <p className="text-primary font-bold text-sm mt-1">Cardiologist</p>
-                            <div className="mt-6 pt-6 border-t border-gray-50 flex justify-around text-center">
-                                <div>
-                                    <p className="text-xl font-bold text-gray-800">4.9</p>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Rating</p>
-                                </div>
-                                <div>
-                                    <p className="text-xl font-bold text-gray-800">1.2k</p>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Reports</p>
-                                </div>
-                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 line-clamp-1">Dr. {user?.name}</h3>
+                            <p className="text-primary font-bold text-xs mt-1">{formData.specialization || 'Provider'}</p>
                         </div>
 
-                        <nav className="bg-white p-4 rounded-3xl premium-shadow border border-gray-100 space-y-2">
-                            {[
-                                { label: 'Public Profile', icon: <User size={18} />, active: true },
-                                { label: 'Qualifications', icon: <Award size={18} /> },
-                                { label: 'Office Details', icon: <Briefcase size={18} /> },
-                                { label: 'Security', icon: <Shield size={18} /> },
-                            ].map((item) => (
+                        <nav className="bg-white p-3 rounded-3xl premium-shadow border border-gray-100 space-y-1">
+                            {tabs.map((item) => (
                                 <button
                                     key={item.label}
+                                    onClick={() => setActiveTab(item.label)}
                                     className={cn(
-                                        "w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold transition-all",
-                                        item.active ? "bg-primary text-white shadow-md shadow-primary/20" : "text-gray-500 hover:bg-gray-50"
+                                        "w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold transition-all text-sm",
+                                        activeTab === item.label 
+                                            ? "bg-primary text-white shadow-md shadow-primary/20" 
+                                            : "text-gray-500 hover:bg-gray-50"
                                     )}
                                 >
                                     {item.icon}
@@ -68,80 +290,13 @@ export default function DoctorProfile() {
                         </nav>
                     </div>
 
-                    {/* Form Content */}
-                    <div className="lg:col-span-2 space-y-8">
-                        <div className="bg-white p-8 rounded-3xl premium-shadow border border-gray-100">
-                            <div className="flex justify-between items-center mb-10">
-                                <h3 className="text-xl font-bold text-gray-800">Professional Information</h3>
-                                <Button variant="outline" size="sm" onClick={() => setIsEditing(!isEditing)}>
-                                    {isEditing ? 'Cancel' : 'Edit Info'}
-                                </Button>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-500 mb-2">Practice Hospital</label>
-                                    <div className="relative">
-                                        <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                        <input
-                                            type="text"
-                                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
-                                            disabled={!isEditing}
-                                            defaultValue="St. Mary's Medical Center"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-500 mb-2">Years of Experience</label>
-                                    <div className="relative">
-                                        <Award className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                        <input
-                                            type="number"
-                                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20"
-                                            disabled={!isEditing}
-                                            defaultValue="12"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-500 mb-2">Professional Bio</label>
-                                    <textarea
-                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 min-h-[120px]"
-                                        disabled={!isEditing}
-                                        defaultValue="Specialized in cardiovascular intensive care with over 12 years of experience in managing complex heart conditions and preventive cardiology."
-                                    />
-                                </div>
-                            </div>
-
-                            {isEditing && (
-                                <div className="mt-10 pt-8 border-t border-gray-50 flex justify-end">
-                                    <Button onClick={() => setIsEditing(false)}>Save Profile</Button>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="bg-white p-8 rounded-3xl premium-shadow border border-gray-100">
-                            <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                                <Clock size={20} className="text-primary" /> Availability Settings
+                    {/* Form Content Area */}
+                    <div className="lg:col-span-3 space-y-8">
+                        <div className="bg-white p-8 rounded-3xl premium-shadow border border-gray-100 min-h-[500px]">
+                            <h3 className="text-xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-50">
+                                {activeTab}
                             </h3>
-                            <div className="space-y-4">
-                                {['Monday', 'Wednesday', 'Friday'].map((day) => (
-                                    <div key={day} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-50">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center font-bold text-gray-400 text-xs shadow-sm">
-                                                {day.substring(0, 3)}
-                                            </div>
-                                            <div>
-                                                <p className="font-bold text-gray-800">{day}</p>
-                                                <p className="text-[10px] text-gray-500 font-bold uppercase">09:00 AM - 05:00 PM</p>
-                                            </div>
-                                        </div>
-                                        <button className="text-primary text-xs font-bold hover:underline">Change</button>
-                                    </div>
-                                ))}
-                            </div>
+                            {renderTabContent()}
                         </div>
                     </div>
                 </div>

@@ -87,8 +87,8 @@ export default function DoctorAppointments() {
                                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                                         </td>
                                     </tr>
-                                ) : appointments.map((app) => (
-                                    <tr key={app.id} className="hover:bg-gray-50 transition-colors">
+                                ) : appointments.map((app, i) => (
+                                    <tr key={(app as any)._id || app.id || i} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-bold">
@@ -119,13 +119,13 @@ export default function DoctorAppointments() {
                                             {app.status === 'pending' ? (
                                                 <div className="flex justify-end gap-2">
                                                     <button
-                                                        onClick={() => handleStatusUpdate(app.id, 'confirmed')}
+                                                        onClick={() => handleStatusUpdate((app as any)._id || app.id, 'confirmed')}
                                                         className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
                                                     >
                                                         <Check size={18} />
                                                     </button>
                                                     <button
-                                                        onClick={() => handleStatusUpdate(app.id, 'canceled')}
+                                                        onClick={() => handleStatusUpdate((app as any)._id || app.id, 'canceled')}
                                                         className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
                                                     >
                                                         <X size={18} />

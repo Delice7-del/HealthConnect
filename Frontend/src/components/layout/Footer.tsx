@@ -7,21 +7,21 @@ export default function Footer() {
             <div className="max-w-7xl mx-auto px-4 md:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                     <div className="space-y-4 col-span-1 md:col-span-1">
-                        <h4 className="text-2xl font-bold gradient-text">HealthConnect</h4>
-                        <p className="text-gray-500 leading-relaxed">
+                        <h4 className="text-2xl font-bold font-heading text-primary">HealthConnect<span className="text-primary ml-0.5">.</span></h4>
+                        <p className="text-gray-500 leading-relaxed italic">
                             Your trusted partner for modern healthcare connections and medical resources.
                         </p>
                         <div className="flex space-x-4">
-                            <a href="#" className="p-2 bg-gray-50 rounded-full text-primary hover:bg-primary hover:text-white transition-all">
+                            <a href="#" className="p-3 bg-gray-50 rounded-2xl text-primary hover:bg-primary hover:text-white transition-all">
                                 <Facebook size={18} />
                             </a>
-                            <a href="#" className="p-2 bg-gray-50 rounded-full text-blue-400 hover:bg-blue-400 hover:text-white transition-all">
+                            <a href="#" className="p-3 bg-gray-50 rounded-2xl text-primary hover:bg-primary hover:text-white transition-all">
                                 <Twitter size={18} />
                             </a>
-                            <a href="#" className="p-2 bg-gray-50 rounded-full text-pink-500 hover:bg-pink-500 hover:text-white transition-all">
+                            <a href="#" className="p-3 bg-gray-50 rounded-2xl text-primary hover:bg-primary hover:text-white transition-all">
                                 <Instagram size={18} />
                             </a>
-                            <a href="#" className="p-2 bg-gray-50 rounded-full text-blue-700 hover:bg-blue-700 hover:text-white transition-all">
+                            <a href="#" className="p-3 bg-gray-50 rounded-2xl text-primary hover:bg-primary hover:text-white transition-all">
                                 <Linkedin size={18} />
                             </a>
                         </div>

@@ -75,7 +75,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/users', authenticateToken, userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/health-conditions', healthConditionRoutes);
 app.use('/api/clinics', clinicRoutes);
 app.use('/api/notifications', notificationRoutes);

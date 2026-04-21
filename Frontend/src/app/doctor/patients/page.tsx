@@ -1,18 +1,81 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/layout/Sidebar';
 import { Search, User, Phone, Mail, Calendar, MoreVertical, Shield } from 'lucide-react';
 import Button from '@/components/Button';
+import { appointmentService } from '@/services/appointmentService';
+import RegisterPatientModal from '@/components/RegisterPatientModal';
+import PatientHistoryModal from '@/components/PatientHistoryModal';
 
 export default function DoctorPatients() {
     const [searchTerm, setSearchTerm] = useState('');
+    const [patients, setPatients] = useState<any[]>([]);
+    const [newlyRegistered, setNewlyRegistered] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+    const [historyModal, setHistoryModal] = useState({ isOpen: false, patientId: '', patientName: '' });
 
-    const patients = [
-        { id: '1', name: 'Michael Chen', email: 'michael@example.com', phone: '+1 234 567 890', lastVisit: '2023-12-15' },
-        { id: '2', name: 'Emma Wilson', email: 'emma@example.com', phone: '+1 234 567 891', lastVisit: '2023-11-20' },
-        { id: '3', name: 'David Lee', email: 'david@example.com', phone: '+1 234 567 892', lastVisit: '2023-12-28' },
-    ];
+    useEffect(() => {
+        try {
+            const cached = localStorage.getItem('newlyRegisteredPatients');
+            if (cached) setNewlyRegistered(JSON.parse(cached));
+        } catch (e) {}
+        fetchPatients();
+    }, []);
+
+    const fetchPatients = async () => {
+        setLoading(true);
+        try {
+            const data = await appointmentService.getMyAppointments();
+            const apps = data.data.appointments;
+            
+            // Deduplicate patients
+            const uniquePatientsMap = new Map();
+            apps.forEach((app: any) => {
+                if (app.patient && !uniquePatientsMap.has(app.patient._id)) {
+                    uniquePatientsMap.set(app.patient._id, {
+                        ...app.patient,
+                        id: app.patient._id,
+                        lastVisit: new Date(app.date).toLocaleDateString(),
+                    });
+                } else if (app.patient && uniquePatientsMap.has(app.patient._id)) {
+                    const existing = uniquePatientsMap.get(app.patient._id);
+                    if (new Date(app.date) > new Date(existing.lastVisit)) {
+                        existing.lastVisit = new Date(app.date).toLocaleDateString();
+                    }
+                }
+            });
+            
+            setPatients(Array.from(uniquePatientsMap.values()));
+        } catch (err) {
+            console.error('Failed to fetch patients', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleRegisterSuccess = (newPatient?: any) => {
+        if (newPatient) {
+            setNewlyRegistered(prev => {
+                const arr = [...prev];
+                if (!arr.find(p => p.id === newPatient.id)) {
+                    arr.push(newPatient);
+                }
+                localStorage.setItem('newlyRegisteredPatients', JSON.stringify(arr));
+                return arr;
+            });
+        }
+        fetchPatients();
+    };
+
+    // Merge fetched patients with newly registered patients (deduplicated)
+    const combinedPatients = Array.from(new Map([...patients, ...newlyRegistered].map(item => [item.id, item])).values());
+
+    const filteredPatients = combinedPatients.filter(p => 
+        (p.name || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+        (p.email || '').toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <div className="flex bg-[#f8fafc] min-h-screen">
@@ -37,11 +100,15 @@ export default function DoctorPatients() {
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {patients.map((patient) => (
+                    {loading ? (
+                        <div className="col-span-full py-20 flex justify-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                        </div>
+                    ) : filteredPatients.map((patient) => (
                         <div key={patient.id} className="bg-white p-6 rounded-3xl premium-shadow border border-gray-100 hover:border-primary/20 transition-all cursor-pointer group">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary text-xl font-bold">
-                                    {patient.name.charAt(0)}
+                                    {(patient.name || 'P').charAt(0).toUpperCase()}
                                 </div>
                                 <button className="text-gray-300 hover:text-gray-500 transition-colors">
                                     <MoreVertical size={20} />
@@ -53,10 +120,10 @@ export default function DoctorPatients() {
 
                             <div className="space-y-3 mb-6">
                                 <div className="flex items-center gap-3 text-sm text-gray-600">
-                                    <Mail size={14} className="text-gray-400" /> {patient.email}
+                                    <Mail size={14} className="text-gray-400" /> {patient.email || 'No email provided'}
                                 </div>
                                 <div className="flex items-center gap-3 text-sm text-gray-600">
-                                    <Phone size={14} className="text-gray-400" /> {patient.phone}
+                                    <Phone size={14} className="text-gray-400" /> {patient.phone || 'No phone provided'}
                                 </div>
                                 <div className="flex items-center gap-3 text-sm text-gray-600">
                                     <Calendar size={14} className="text-gray-400" /> Last Visit: {patient.lastVisit}
@@ -67,12 +134,12 @@ export default function DoctorPatients() {
                                 <span className="flex items-center gap-1 text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full uppercase tracking-wider">
                                     <Shield size={10} /> Insured
                                 </span>
-                                <button className="text-primary text-sm font-bold hover:underline">View History</button>
+                                <button onClick={() => setHistoryModal({ isOpen: true, patientId: patient.id, patientName: patient.name })} className="text-primary text-sm font-bold hover:underline">View History</button>
                             </div>
                         </div>
                     ))}
 
-                    <button className="border-2 border-dashed border-gray-200 rounded-3xl p-8 flex flex-col items-center justify-center text-gray-400 hover:border-primary/50 hover:text-primary transition-all group">
+                    <button onClick={() => setIsRegisterOpen(true)} className="border-2 border-dashed border-gray-200 rounded-3xl p-8 flex flex-col items-center justify-center text-gray-400 hover:border-primary/50 hover:text-primary transition-all group">
                         <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gray-50 mb-4 group-hover:bg-primary/10">
                             <User size={24} />
                         </div>
@@ -80,6 +147,19 @@ export default function DoctorPatients() {
                     </button>
                 </div>
             </main>
+            
+            <RegisterPatientModal 
+                isOpen={isRegisterOpen} 
+                onClose={() => setIsRegisterOpen(false)} 
+                onSuccess={handleRegisterSuccess} 
+            />
+            
+            <PatientHistoryModal 
+                isOpen={historyModal.isOpen} 
+                onClose={() => setHistoryModal({ ...historyModal, isOpen: false })} 
+                patientId={historyModal.patientId} 
+                patientName={historyModal.patientName} 
+            />
         </div>
     );
 }

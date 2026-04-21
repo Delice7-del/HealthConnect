@@ -75,7 +75,23 @@ const userSchema = new mongoose.Schema({
     notifications: {
       email: { type: Boolean, default: true },
       sms: { type: Boolean, default: false },
-      push: { type: Boolean, default: true }
+      push: { type: Boolean, default: true },
+      appointmentReminders: { type: Boolean, default: true },
+      healthTips: { type: Boolean, default: false },
+      marketingEmails: { type: Boolean, default: false }
+    },
+    privacy: {
+      profileVisibility: {
+        type: String,
+        enum: ['public', 'private', 'doctors_only'],
+        default: 'doctors_only'
+      },
+      shareDataWithResearchers: { type: Boolean, default: false },
+      allowAnonymousAnalytics: { type: Boolean, default: true }
+    },
+    security: {
+      twoFactorEnabled: { type: Boolean, default: false },
+      loginAlerts: { type: Boolean, default: true }
     },
     healthConditions: [{
       type: mongoose.Schema.Types.ObjectId,

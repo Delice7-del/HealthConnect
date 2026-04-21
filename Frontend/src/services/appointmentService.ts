@@ -1,8 +1,12 @@
 import { apiCall } from '../lib/api';
 
 export const appointmentService = {
-    async getAppointments() {
-        return apiCall('/appointments');
+    async getAllAppointments() {
+        return apiCall('/appointments/all');
+    },
+
+    async getMyAppointments() {
+        return apiCall('/appointments/my');
     },
 
     async bookAppointment(appointmentData: any) {

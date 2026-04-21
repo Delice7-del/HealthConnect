@@ -1,11 +1,35 @@
 'use client';
 
+import React, { useState } from 'react';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Button from "@/components/Button";
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { apiCall } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 export default function ContactPage() {
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const data = await apiCall('/contact', { method: 'POST', body: JSON.stringify(formData) });
+            if (data.status === 'success' || data.message) {
+                toast.success('Message sent! We will get back to you soon.');
+                setFormData({ name: '', email: '', message: '' });
+            } else {
+                toast.error(data.message || 'Failed to send message.');
+            }
+        } catch (error: any) {
+            toast.error(error.message || 'Something went wrong. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <main className="min-h-screen bg-[#f8fafc]">
             <Navbar />
@@ -55,11 +79,14 @@ export default function ContactPage() {
 
                         {/* Contact Form */}
                         <div className="bg-white p-8 md:p-12 rounded-3xl premium-shadow border border-gray-100">
-                            <form className="space-y-6">
+                            <form className="space-y-6" onSubmit={handleSubmit}>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Your Name</label>
                                     <input
                                         type="text"
+                                        required
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                                         placeholder="Full Name"
                                     />
@@ -68,6 +95,9 @@ export default function ContactPage() {
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
                                     <input
                                         type="email"
+                                        required
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                                         placeholder="name@example.com"
                                     />
@@ -76,12 +106,15 @@ export default function ContactPage() {
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Message</label>
                                     <textarea
                                         rows={4}
+                                        required
+                                        value={formData.message}
+                                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                                         placeholder="How can we help you?"
                                     />
                                 </div>
-                                <Button className="w-full" size="lg">
-                                    Send Message <Send size={18} className="ml-2" />
+                                <Button className="w-auto" size="sm" type="submit" disabled={loading}>
+                                    {loading ? 'Sending...' : 'Send Message'} <Send size={18} className="ml-2" />
                                 </Button>
                             </form>
                         </div>

@@ -2,58 +2,65 @@
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { Stethoscope, MessageSquare, BookOpen, MapPin, Calendar, Activity } from 'lucide-react';
+import { Stethoscope, MessageSquare, BookOpen, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const services = [
     {
         title: 'Consult Experts',
         desc: 'Connect with specialized doctors across various fields for personalized consultations.',
-        icon: <Stethoscope size={28} />,
-        color: 'bg-purple-100 text-purple-600'
+        icon: <Stethoscope size={32} />,
     },
     {
         title: 'Virtual Chat',
         desc: 'Instant messaging with healthcare providers for quick advice and follow-ups.',
-        icon: <MessageSquare size={28} />,
-        color: 'bg-purple-100 text-purple-600'
+        icon: <MessageSquare size={32} />,
     },
     {
         title: 'Health Resources',
         desc: 'Access a vast library of verified medical articles, guides, and wellness tips.',
-        icon: <BookOpen size={28} />,
-        color: 'bg-purple-100 text-purple-600'
+        icon: <BookOpen size={32} />,
     },
     {
         title: 'Find Clinics',
         desc: 'Locate top-rated clinics and hospitals near you with integrated maps.',
-        icon: <MapPin size={28} />,
-        color: 'bg-purple-100 text-purple-600'
+        icon: <MapPin size={32} />,
     }
 ];
 
 export default function ServicesPage() {
     return (
-        <main className="min-h-screen bg-[#f8fafc]">
+        <main className="min-h-screen bg-white">
             <Navbar />
 
-            <section className="pt-32 pb-20">
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
-                    <div className="text-center mb-16">
-                        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Comprehensive Services</h1>
-                        <p className="text-gray-600 max-w-2xl mx-auto">Everything you need to manage your health and connect with the best medical care.</p>
-                    </div>
+            <section className="pt-40 pb-32 bg-primary hero-curved text-white px-4 md:px-8 text-center relative z-10">
+                <div className="max-w-7xl mx-auto">
+                    <motion.h1 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-4xl md:text-7xl font-normal mb-6 font-heading"
+                    >
+                        Our <span className="italic font-light opacity-80">Comprehensive</span> Services
+                    </motion.h1>
+                    <p className="text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
+                        Everything you need to manage your health and connect with the best medical care with ease and precision.
+                    </p>
+                </div>
+            </section>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <section className="py-32 relative z-0">
+                <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         {services.map((service, i) => (
-                            <div key={i} className="flex gap-6 p-8 bg-white rounded-3xl premium-shadow group hover:bg-primary/5 transition-all">
-                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 ${service.color}`}>
+                            <div key={i} className="group flex gap-8 p-10 bg-white border border-gray-100 rounded-[3rem] shadow-xl shadow-gray-100/50 hover:border-primary/20 transition-all duration-500 hover:-translate-y-2">
+                                <div className="w-20 h-20 rounded-3xl bg-primary/5 flex items-center justify-center flex-shrink-0 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
                                     {service.icon}
                                 </div>
-                                <div>
-                                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-primary transition-colors">
+                                <div className="pt-2">
+                                    <h3 className="text-2xl font-bold text-primary mb-3 font-heading">
                                         {service.title}
                                     </h3>
-                                    <p className="text-gray-500 leading-relaxed">{service.desc}</p>
+                                    <p className="text-gray-500 leading-relaxed italic">{service.desc}</p>
                                 </div>
                             </div>
                         ))}

@@ -10,21 +10,21 @@ export default function PatientDashboard() {
     const { user } = useAuth();
 
     const stats = [
-        { label: 'Upcoming', value: '2', icon: <Calendar size={20} />, color: 'bg-blue-500' },
-        { label: 'Consultations', value: '12', icon: <MessageSquare size={20} />, color: 'bg-purple-500' },
-        { label: 'Health Score', value: '98', icon: <Activity size={20} />, color: 'bg-green-500' },
+        { label: 'Upcoming', value: '2', icon: <Calendar size={20} />, color: 'bg-primary' },
+        { label: 'Consultations', value: '12', icon: <MessageSquare size={20} />, color: 'bg-primary-light' },
+        { label: 'Health Score', value: '98', icon: <Activity size={20} />, color: 'bg-secondary' },
     ];
 
     return (
-        <div className="flex bg-[#f8fafc] min-h-screen">
+        <div className="flex bg-white min-h-screen">
             <Sidebar role="patient" />
 
-            <main className="flex-1 p-8 overflow-y-auto">
+            <main className="flex-1 p-8 md:p-12 overflow-y-auto">
                 {/* Header */}
-                <header className="flex justify-between items-center mb-10">
+                <header className="flex justify-between items-center mb-12">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Hello, {user?.name || 'Patient'} 👋</h1>
-                        <p className="text-gray-500 mt-1">Here's what's happening with your health today.</p>
+                        <h1 className="text-3xl md:text-4xl font-normal text-primary font-heading">Hello, {user?.name || 'Patient'} 👋</h1>
+                        <p className="text-gray-500 mt-1 italic">Here's what's happening with your health today.</p>
                     </div>
                     <Button>
                         <Plus size={20} className="mr-2" /> Book Appointment

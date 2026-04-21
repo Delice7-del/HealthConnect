@@ -19,14 +19,14 @@ export default function Button({
     disabled,
     ...props
 }: ButtonProps) {
-    const baseStyles = "inline-flex items-center justify-center rounded-full font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed";
+    const baseStyles = "inline-flex items-center justify-center rounded-full font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer";
 
     const variants = {
-        primary: "bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/25 active:scale-95",
-        secondary: "bg-secondary text-white hover:bg-secondary/90 shadow-lg shadow-secondary/25 active:scale-95",
-        outline: "border-2 border-primary text-primary hover:bg-primary/5 active:scale-95",
-        ghost: "text-gray-600 hover:bg-gray-100",
-        danger: "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/25 active:scale-95",
+        primary: "bg-primary text-white hover:bg-primary-light shadow-xl shadow-primary/20 active:scale-95 font-bold italic",
+        secondary: "bg-secondary text-white hover:opacity-90 shadow-xl shadow-secondary/20 active:scale-95 font-bold italic",
+        outline: "border-2 border-primary/20 text-primary hover:bg-primary hover:text-white active:scale-95 font-bold italic",
+        ghost: "text-primary/60 hover:bg-primary/5 hover:text-primary font-bold italic",
+        danger: "bg-red-500 text-white hover:bg-red-600 shadow-xl shadow-red-500/20 active:scale-95 font-bold italic",
     };
 
     const sizes = {

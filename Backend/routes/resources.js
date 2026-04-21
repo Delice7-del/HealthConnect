@@ -21,6 +21,18 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get current user's resources
+router.get('/my', authenticateToken, async (req, res) => {
+    try {
+        const resources = await HealthResource.find({ author: req.user._id })
+            .populate('author', 'name role')
+            .sort({ createdAt: -1 });
+        res.status(200).json({ status: 'success', data: { resources } });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
 // Create resource (Admin/Doctor)
 router.post('/', authenticateToken, authorize('admin', 'doctor'), async (req, res) => {
     try {

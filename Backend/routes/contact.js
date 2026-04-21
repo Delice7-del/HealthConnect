@@ -1,5 +1,6 @@
 const express = require('express');
 const { sendEmail } = require('../utils/email');
+const Contact = require('../models/Contact');
 
 const router = express.Router();
 
@@ -24,6 +25,13 @@ router.post('/', async (req, res) => {
         message: 'Please provide a valid email address'
       });
     }
+
+    // Save to database
+    await Contact.create({
+      name,
+      email,
+      message,
+    });
 
     // Send email to admin
     try {
@@ -61,10 +69,11 @@ router.post('/', async (req, res) => {
         message: 'Thank you for your message. We will get back to you soon!'
       });
     } catch (emailError) {
-      console.error('Email sending failed:', emailError);
-      res.status(500).json({
-        status: 'error',
-        message: 'Failed to send email. Please try again later.'
+      console.error('Email sending failed (credentials might be missing):', emailError.message);
+      res.status(200).json({
+        status: 'success',
+        message: 'Thank you for your message. We will get back to you soon! (Saved to database only)',
+        note: 'Emails could not be sent. Please configure EMAIL_USER in config.env'
       });
     }
   } catch (error) {

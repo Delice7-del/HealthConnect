@@ -53,8 +53,8 @@ export default function Sidebar({ role }: SidebarProps) {
     return (
         <aside className="w-64 bg-white border-r border-gray-100 flex flex-col h-screen sticky top-0">
             <div className="p-6">
-                <Link href="/" className="text-2xl font-bold gradient-text">
-                    HealthConnect
+                <Link href="/" className="text-2xl font-bold text-primary font-heading tracking-tight">
+                    HealthConnect<span className="text-primary ml-0.5">.</span>
                 </Link>
             </div>
 

@@ -21,7 +21,7 @@ router.get('/my', authenticateToken, async (req, res) => {
     try {
         const query = req.user.role === 'doctor' ? { doctor: req.user._id } : { patient: req.user._id };
         const appointments = await Appointment.find(query)
-            .populate(req.user.role === 'doctor' ? 'patient' : 'doctor', 'name email specialization doctorDetails')
+            .populate(req.user.role === 'doctor' ? 'patient' : 'doctor', 'name email phone avatar specialization doctorDetails')
             .sort({ date: 1, time: 1 });
         res.status(200).json({ status: 'success', data: { appointments } });
     } catch (error) {

@@ -1,17 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #3b82f6;
+  --primary: #134d48;
+  --primary-light: #1a5d57;
   --secondary: #10b981;
-  --accent: #8b5cf6;
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --accent: #ffffff;
+  --background: #ffffff;
+  --foreground: #134d48;
   --card-bg: #ffffff;
   --border: #e2e8f0;
 }
 
 @theme inline {
   --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
   --color-background: var(--background);
@@ -22,49 +24,55 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-outfit), sans-serif;
     -webkit-font-smoothing: antialiased;
     @apply text-gray-900 antialiased;
-    /* Added from snippet */
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    /* Added from snippet */
+  }
+
+  a {
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: var(--color-primary);
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: var(--font-abel), sans-serif;
+    @apply font-normal;
   }
 }
 
 @layer utilities {
   .gpu-boost {
-    /* Added from snippet, assuming this is the custom transform-gpu utility */
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
   }
 
-  /* Adding a custom will-change utility as per instruction */
-  .will-change-transform {
-    will-change: transform;
+  .hero-curved {
+    border-bottom-left-radius: 100px;
+    border-bottom-right-radius: 100px;
   }
 
-  .will-change-opacity {
-    will-change: opacity;
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .will-change-scroll {
-    will-change: scroll-position;
+  .premium-shadow {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
   }
-}
 
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.premium-shadow {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  .section-teal {
+    @apply bg-[var(--primary)] text-white;
+  }
 }

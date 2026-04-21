@@ -5,14 +5,17 @@ import { X, Calendar, Clock, User, Check, AlertCircle } from 'lucide-react';
 import Button from './Button';
 import { apiCall } from '@/lib/api';
 import { userService } from '@/services/userService';
+import { appointmentService } from '@/services/appointmentService';
+import toast from 'react-hot-toast';
 
 interface Props {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
+    preSelectedDoctorId?: string;
 }
 
-export default function BookAppointmentModal({ isOpen, onClose, onSuccess }: Props) {
+export default function BookAppointmentModal({ isOpen, onClose, onSuccess, preSelectedDoctorId }: Props) {
     const [doctors, setDoctors] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -24,6 +27,12 @@ export default function BookAppointmentModal({ isOpen, onClose, onSuccess }: Pro
         time: '',
         reason: '',
     });
+
+    useEffect(() => {
+        if (preSelectedDoctorId) {
+            setFormData(prev => ({ ...prev, doctor: preSelectedDoctorId }));
+        }
+    }, [preSelectedDoctorId]);
 
     useEffect(() => {
         if (isOpen) {
@@ -49,10 +58,8 @@ export default function BookAppointmentModal({ isOpen, onClose, onSuccess }: Pro
         setError('');
 
         try {
-            await apiCall('/appointments/book', {
-                method: 'POST',
-                body: JSON.stringify(formData),
-            });
+            await appointmentService.bookAppointment(formData);
+            toast.success('Appointment booked successfully! A confirmation notification has been sent.');
             onSuccess();
             onClose();
             // Reset form

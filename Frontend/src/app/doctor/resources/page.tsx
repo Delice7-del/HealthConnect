@@ -6,10 +6,13 @@ import { apiCall } from '@/lib/api';
 import { FileText, Plus, Search, Edit3, Trash2, Eye } from 'lucide-react';
 import Button from '@/components/Button';
 import { cn } from '@/lib/utils';
+import PublishArticleModal from '@/components/PublishArticleModal';
 
 export default function DoctorResources() {
     const [resources, setResources] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
     useEffect(() => {
         fetchResources();
@@ -17,8 +20,7 @@ export default function DoctorResources() {
 
     const fetchResources = async () => {
         try {
-            const data = await apiCall('/resources');
-            // Filter to only show resources by this doctor if needed, or all for now
+            const data = await apiCall('/resources/my');
             setResources(data.data.resources);
         } catch (err) {
             console.error('Failed to fetch resources', err);
@@ -26,6 +28,11 @@ export default function DoctorResources() {
             setLoading(false);
         }
     };
+
+    const filteredResources = resources.filter(res => 
+        res.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        res.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <div className="flex bg-[#f8fafc] min-h-screen">
@@ -37,7 +44,7 @@ export default function DoctorResources() {
                         <h1 className="text-3xl font-bold text-gray-900">My Health Articles</h1>
                         <p className="text-gray-500 mt-1">Write and manage your educational content for patients.</p>
                     </div>
-                    <Button>
+                    <Button onClick={() => setIsPublishModalOpen(true)}>
                         <Plus size={20} className="mr-2" /> Publish New Article
                     </Button>
                 </header>
@@ -51,6 +58,8 @@ export default function DoctorResources() {
                                 type="text"
                                 placeholder="Search my articles..."
                                 className="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-100 rounded-2xl outline-none"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
                     </div>
@@ -71,8 +80,8 @@ export default function DoctorResources() {
                                     <tr>
                                         <td colSpan={5} className="px-6 py-20 text-center text-gray-400">Loading resources...</td>
                                     </tr>
-                                ) : resources.length > 0 ? resources.map((res) => (
-                                    <tr key={res.id} className="hover:bg-gray-50 transition-colors">
+                                ) : filteredResources.length > 0 ? filteredResources.map((res) => (
+                                    <tr key={res._id || res.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary">
@@ -114,6 +123,12 @@ export default function DoctorResources() {
                     </div>
                 </div>
             </main>
+
+            <PublishArticleModal 
+                isOpen={isPublishModalOpen}
+                onClose={() => setIsPublishModalOpen(false)}
+                onSuccess={fetchResources}
+            />
         </div>
     );
 }

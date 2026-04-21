@@ -2,80 +2,42 @@
 
 import React from 'react';
 import Button from './Button';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ChevronRight, ShieldCheck, Clock, Users } from 'lucide-react';
+import { ChevronRight, Calendar, User, Phone, ChevronDown } from 'lucide-react';
 
-export default function Hero() {
+interface Props {
+    onBook?: () => void;
+}
+
+export default function Hero({ onBook }: Props) {
     return (
-        <section className="relative pt-32 pb-20 overflow-hidden gpu-boost">
-            {/* Background blobs */}
-            <div className="absolute top-0 right-0 -z-10 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 -z-10 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl" />
+        <section className="relative pt-0 pb-32 overflow-hidden bg-primary hero-curved bg-[url('/images/hero_bg.png')] bg-cover bg-center bg-no-repeat bg-blend-overlay">
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-primary/20 pointer-events-none" />
+            <div className="pt-48 pb-48 px-4 md:px-12 relative">
+                <div className="max-w-7xl mx-auto text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <h1 className="text-4xl md:text-7xl font-normal text-white mb-6 leading-tight font-heading">
+                            A Great Place care for <br />
+                            <span className="italic font-light">yourself</span>
+                        </h1>
+                        <p className="text-white/70 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+                            Medical recover is most focused in helping you discover your most beautiful smile.
+                        </p>
 
-            <div className="max-w-7xl mx-auto px-4 md:px-8 text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    <span className="inline-block px-4 py-1.5 mb-6 text-sm font-semibold text-primary bg-primary/10 rounded-full">
-                        Modern Healthcare Platform
-                    </span>
-                    <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 leading-tight">
-                        Connecting Patients with <br />
-                        <span className="gradient-text">Top Healthcare Experts</span>
-                    </h1>
-                    <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-                        Experience the future of healthcare with seamless appointment booking,
-                        expert consultations, and trusted health resources all in one place.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-                        <Link href="/register">
-                            <Button size="xl">
-                                Get Started <ChevronRight size={20} className="ml-2" />
-                            </Button>
-                        </Link>
-                        <Link href="/about">
-                            <Button variant="outline" size="xl">
-                                Learn More
-                            </Button>
-                        </Link>
-                    </div>
-                </motion.div>
-
-                {/* Stats/Features */}
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8"
-                >
-                    <div className="p-8 bg-white glass rounded-3xl premium-shadow space-y-4">
-                        <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
-                            <ShieldCheck size={28} />
+                        <div className="flex justify-center">
+                            <button 
+                                className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-2.5 rounded-full font-bold transition-all backdrop-blur-md hover:scale-105 cursor-pointer active:scale-95"
+                                onClick={() => onBook?.()}
+                            >
+                                Book Appointment
+                            </button>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-800">Verified Experts</h3>
-                        <p className="text-gray-500">Every doctor on our platform goes through a strict verification process.</p>
-                    </div>
-
-                    <div className="p-8 bg-white glass rounded-3xl premium-shadow space-y-4 transition-transform hover:-translate-y-2">
-                        <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
-                            <Clock size={28} />
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800">24/7 Availability</h3>
-                        <p className="text-gray-500">Book appointments or consult with doctors anytime, anywhere.</p>
-                    </div>
-
-                    <div className="p-8 bg-white glass rounded-3xl premium-shadow space-y-4">
-                        <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
-                            <Users size={28} />
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800">Patient Centric</h3>
-                        <p className="text-gray-500">Tailored health dashboards and personalized care for every patient.</p>
-                    </div>
-                </motion.div>
+                    </motion.div>
+                </div>
             </div>
         </section>
     );

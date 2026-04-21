@@ -103,16 +103,16 @@ export default function PatientAppointments() {
                         </div>
                     ) : filteredAppointments.length > 0 ? (
                         filteredAppointments.map((app) => (
-                            <div key={app.id} className="bg-white p-6 rounded-3xl premium-shadow border border-gray-100 flex flex-col md:flex-row items-center gap-6 group hover:border-primary/20 transition-all">
+                            <div key={(app as any)._id || (app as any).id} className="bg-white p-6 rounded-3xl premium-shadow border border-gray-100 flex flex-col md:flex-row items-center gap-6 group hover:border-primary/20 transition-all">
                                 <div className="w-16 h-16 bg-gray-50 rounded-2xl flex flex-col items-center justify-center border border-gray-100 group-hover:bg-primary/5 transition-colors">
                                     <span className="text-gray-800 font-bold text-lg">{new Date(app.date).getDate()}</span>
                                     <span className="text-gray-400 text-[10px] font-bold uppercase">{new Date(app.date).toLocaleString('default', { month: 'short' })}</span>
                                 </div>
 
                                 <div className="flex-1 text-center md:text-left">
-                                    <h4 className="font-bold text-gray-900 text-lg">Dr. {(app.doctor as any).name || 'Unknown'}</h4>
+                                    <h4 className="font-bold text-gray-900 text-lg">Dr. {(app.doctor as any)?.name || 'Unknown'}</h4>
                                     <p className="text-gray-500 text-sm flex items-center justify-center md:justify-start gap-1">
-                                        <Clock size={14} /> {app.time} • {(app.doctor as any).doctorDetails?.specialization}
+                                        <Clock size={14} /> {app.time} • {(app.doctor as any)?.doctorDetails?.specialization}
                                     </p>
                                 </div>
 
