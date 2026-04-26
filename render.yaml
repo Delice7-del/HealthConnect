@@ -1,0 +1,36 @@
+services:
+  # Frontend - Next.js web service
+  - name: healthconnect-frontend
+    type: web
+    region: oregon
+    buildCommand: cd Frontend && npm install && npm run build
+    startCommand: cd Frontend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://healthconnect-backend.onrender.com
+
+  # Backend - Express API
+  - name: healthconnect-backend
+    type: web
+    region: oregon
+    buildCommand: cd Backend && npm install
+    startCommand: cd Backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
