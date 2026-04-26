@@ -7,7 +7,10 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, 'config.env') });
+// Load environment variables only in development
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: path.join(__dirname, 'config.env') });
+}
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -134,11 +137,12 @@ const connectDB = async () => {
       process.exit(1);
     }
 
-    console.log(`[DB] Attempting to connect to MongoDB...`);
+    // Mask credentials for safe logging
+    const maskedUri = dbUri.replace(/\/\/.*@/, '//****:****@');
+    console.log(`[DB] Attempting to connect to MongoDB: ${maskedUri}`);
+    
     const conn = await mongoose.connect(dbUri);
     console.log(`[DB] MongoDB Connected: ${conn.connection.host}`);
-    
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error('CRITICAL: Database connection error occurred!');
     console.error('Error Name:', error.name);
