@@ -4,8 +4,8 @@
   "description": "HealthConnect - Health Education Platform",
   "private": true,
   "scripts": {
-    "install:all": "cd Backend && npm install && cd ../Frontend && npm install",
-    "build": "cd Frontend && npm run build",
+    "install:all": "cd Backend && npm install --quiet --audit=false && cd ../Frontend && npm install --quiet --audit=false",
+    "build": "npm run install:all && cd Frontend && npm run build",
     "start": "cd Frontend && npm start",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd Backend && npm run dev",

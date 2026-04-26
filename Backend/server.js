@@ -5,8 +5,9 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
 const path = require('path');
-require('dotenv').config({ path: './config.env' });
+require('dotenv').config({ path: path.join(__dirname, 'config.env') });
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -56,6 +57,9 @@ app.use('/api/', limiter);
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Cookie parser
+app.use(cookieParser());
 
 // Compression middleware
 app.use(compression());
@@ -122,23 +126,29 @@ app.use('*', (req, res) => {
 // Database connection
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(
-      process.env.NODE_ENV === 'production'
-        ? process.env.MONGODB_URI_PROD
-        : process.env.MONGODB_URI,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
+    const dbUri = process.env.MONGODB_URI || process.env.MONGODB_URI_PROD;
+    
+    if (!dbUri) {
+      console.error('CRITICAL: MongoDB URI is missing!');
+      console.error('Please set MONGODB_URI in your environment variables.');
+      process.exit(1);
+    }
+
+    console.log(`[DB] Attempting to connect to MongoDB...`);
+    const conn = await mongoose.connect(dbUri);
+    console.log(`[DB] MongoDB Connected: ${conn.connection.host}`);
+    
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error('CRITICAL: Database connection error occurred!');
     console.error('Error Name:', error.name);
     console.error('Error Message:', error.message);
+    
     if (error.name === 'MongooseServerSelectionError') {
-      console.error('HINT: Make sure your MongoDB service is running (mongod).');
+      console.error('HINT: This usually means the MongoDB URI is incorrect or the database is not accessible.');
     }
+    
+    // In production, we want the process to exit so Render can restart it
     process.exit(1);
   }
 };
