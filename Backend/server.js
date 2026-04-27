@@ -7,10 +7,9 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-// Load environment variables only in development
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config({ path: path.join(__dirname, 'config.env') });
-}
+// Load environment variables
+require('dotenv').config({ path: path.join(__dirname, 'config.env') });
+
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -133,9 +132,19 @@ const connectDB = async () => {
     
     if (!dbUri) {
       console.error('CRITICAL: MongoDB URI is missing!');
-      console.error('Please set MONGODB_URI in your environment variables.');
+      console.error('HINT: Set MONGODB_URI in your environment variables.');
       process.exit(1);
     }
+
+    // Check if we're on Render or in production and still using localhost
+    const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
+    if (isProduction && (dbUri.includes('localhost') || dbUri.includes('127.0.0.1'))) {
+      console.error('CRITICAL: Localhost MongoDB detected in Production/Render environment!');
+      console.error('HINT: You must use a remote MongoDB instance (like MongoDB Atlas) for cloud deployments.');
+      console.error('HINT: Update MONGODB_URI in your Render dashboard environment variables.');
+      process.exit(1);
+    }
+
 
     // Mask credentials for safe logging
     const maskedUri = dbUri.replace(/\/\/.*@/, '//****:****@');
