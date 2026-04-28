@@ -1,13 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from '@/components/layout/Sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { Activity, ArrowUpRight, Calendar, ChevronRight, Clock, MessageSquare, MoreHorizontal, Paperclip, Plus, Send, Shield, Smile, User } from 'lucide-react';
 import Button from '@/components/Button';
+import BookAppointmentModal from '@/components/BookAppointmentModal';
 
 export default function PatientDashboard() {
     const { user } = useAuth();
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
     const stats = [
         { label: 'Upcoming', value: '2', icon: <Calendar size={20} />, color: 'bg-primary' },
@@ -26,7 +28,7 @@ export default function PatientDashboard() {
                         <h1 className="text-3xl md:text-4xl font-normal text-primary font-heading">Hello, {user?.name || 'Patient'} 👋</h1>
                         <p className="text-gray-500 mt-1 italic">Here's what's happening with your health today.</p>
                     </div>
-                    <Button>
+                    <Button onClick={() => setIsBookingModalOpen(true)}>
                         <Plus size={20} className="mr-2" /> Book Appointment
                     </Button>
                 </header>
@@ -94,6 +96,16 @@ export default function PatientDashboard() {
                         </div>
                     </div>
                 </div>
+
+                {/* Book Appointment Modal */}
+                <BookAppointmentModal
+                    isOpen={isBookingModalOpen}
+                    onClose={() => setIsBookingModalOpen(false)}
+                    onSuccess={() => {
+                        // Optionally refresh data or show success
+                        console.log('Appointment booked successfully');
+                    }}
+                />
             </main>
         </div>
     );
