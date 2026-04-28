@@ -38,9 +38,11 @@ app.use((req, res, next) => {
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? ['https://yourdomain.com']
-    : true, // Allow all origins in development for easier debugging
+  origin: function(origin, callback) {
+    // Allow all origins for now to prevent Vercel deployment CORS issues
+    // (Vercel uses different URLs for preview branches, so hardcoding one is tricky)
+    callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
