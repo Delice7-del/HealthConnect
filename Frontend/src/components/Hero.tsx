@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import Button from './Button';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ChevronRight, Calendar, User, Phone, ChevronDown } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 
 interface Props {
     onBook?: () => void;
@@ -28,13 +28,23 @@ export default function Hero({ onBook }: Props) {
                             Medical recover is most focused in helping you discover your most beautiful smile.
                         </p>
 
-                        <div className="flex justify-center">
-                            <button 
+                        <div className="flex justify-center items-center gap-4 flex-wrap">
+                            {/* Book Appointment button */}
+                            <button
                                 className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-2.5 rounded-full font-bold transition-all backdrop-blur-md hover:scale-105 cursor-pointer active:scale-95"
                                 onClick={() => onBook?.()}
                             >
                                 Book Appointment
                             </button>
+
+                            {/* Join button — links to login/signup */}
+                            <Link
+                                href="/register"
+                                className="inline-flex items-center gap-2 bg-white text-teal-800 hover:bg-teal-50 px-6 py-2.5 rounded-full font-bold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-white/20"
+                            >
+                                <UserPlus size={16} strokeWidth={2.5} />
+                                Join
+                            </Link>
                         </div>
                     </motion.div>
                 </div>

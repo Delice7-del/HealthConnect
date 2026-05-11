@@ -19,6 +19,10 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "HealthConnect - Connect with Healthcare Providers",
   description: "A comprehensive health education and appointment platform.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
